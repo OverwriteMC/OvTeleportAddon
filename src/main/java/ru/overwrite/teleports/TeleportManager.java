@@ -87,8 +87,7 @@ public final class TeleportManager {
 
     public void teleportPlayer(Player requester, String teleportTo, Location loc, Settings settings) {
         if (pluginConfig.getMainSettings().invulnerableAfterTeleport() > 0) {
-            requester.setInvulnerable(true);
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> requester.setInvulnerable(false), pluginConfig.getMainSettings().invulnerableAfterTeleport());
+            requester.setNoDamageTicks(pluginConfig.getMainSettings().invulnerableAfterTeleport());
         }
         Bukkit.getScheduler().runTask(plugin, () -> {
             requester.teleport(loc);
