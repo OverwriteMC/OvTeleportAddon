@@ -69,7 +69,7 @@ public final class Utils {
     public void checkUpdates(OvTeleportAddon plugin, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new URL("https://raw.githubusercontent.com/Overwrite987/OvTeleportAddon/master/VERSION")
+                    new URL("https://raw.githubusercontent.com/OverwriteMC/OvTeleportAddon/master/VERSION")
                             .openStream()))) {
                 consumer.accept(reader.readLine().trim());
             } catch (IOException ex) {
