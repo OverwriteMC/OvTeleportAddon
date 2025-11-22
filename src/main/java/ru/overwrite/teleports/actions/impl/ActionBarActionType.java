@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.overwrite.teleports.OvTeleportAddon;
 import ru.overwrite.teleports.actions.Action;
 import ru.overwrite.teleports.actions.ActionType;
+import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.utils.Utils;
 
 public final class ActionBarActionType implements ActionType {
@@ -14,7 +15,7 @@ public final class ActionBarActionType implements ActionType {
 
     @Override
     public @NotNull Action instance(@NotNull String context, @NotNull OvTeleportAddon plugin) {
-        String text = Utils.COLORIZER.colorize(context);
+        String text = ColorizerProvider.COLORIZER.colorize(context);
         return new ActionBarAction(text);
     }
 

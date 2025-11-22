@@ -1,23 +1,22 @@
 package ru.overwrite.teleports.actions;
 
+import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.overwrite.teleports.OvTeleportAddon;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class ActionRegistry {
+public final class ActionService {
 
     private static final Pattern ACTION_PATTERN = Pattern.compile("\\[(\\S+)] ?(.*)");
 
     private final OvTeleportAddon plugin;
     private final Map<String, ActionType> types;
 
-    public ActionRegistry(OvTeleportAddon plugin) {
+    public ActionService(OvTeleportAddon plugin) {
         this.plugin = plugin;
         this.types = new HashMap<>();
     }
@@ -27,6 +26,22 @@ public final class ActionRegistry {
             plugin.getSLF4JLogger().warn("Type '{}' was overridden with '{}'", type.key(), type.getClass().getName());
         }
         types.putIfAbsent(type.key().value(), type);
+    }
+
+    @NotNull
+    public List<Action> getActionList(List<String> actionStrings) {
+        if (actionStrings.isEmpty()) {
+            return List.of();
+        }
+        ImmutableList.Builder<Action> builder = ImmutableList.builder();
+        for (String actionStr : actionStrings) {
+            try {
+                builder.add(Objects.requireNonNull(resolveAction(actionStr), "Type doesn't exist"));
+            } catch (Exception ex) {
+                plugin.getSLF4JLogger().warn("Couldn't create action for string '{}'", actionStr, ex);
+            }
+        }
+        return builder.build();
     }
 
     public @Nullable ActionType getType(@NotNull String typeStr) {

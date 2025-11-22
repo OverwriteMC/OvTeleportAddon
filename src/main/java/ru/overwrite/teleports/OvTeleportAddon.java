@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.commands.TeleportAddonCommand;
 import ru.overwrite.teleports.commands.TeleportCancelCommand;
 import ru.overwrite.teleports.configuration.Config;
@@ -42,7 +43,7 @@ public final class OvTeleportAddon extends JavaPlugin {
     public void onEnable() {
         final FileConfiguration config = pluginConfig.getFile(getDataFolder().getAbsolutePath(), "config.yml");
         final ConfigurationSection mainSettings = config.getConfigurationSection("main_settings");
-        Utils.setupColorizer(mainSettings);
+        ColorizerProvider.init(mainSettings);
         PluginManager pluginManager = server.getPluginManager();
         if (pluginManager.isPluginEnabled("Vault")) {
             ServicesManager servicesManager = server.getServicesManager();

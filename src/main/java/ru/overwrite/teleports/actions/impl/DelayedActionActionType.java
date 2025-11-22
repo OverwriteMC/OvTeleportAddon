@@ -19,7 +19,7 @@ public final class DelayedActionActionType implements ActionType {
         int spaceIndex = context.indexOf(' ');
         long delay = Integer.parseInt(context.substring(0, spaceIndex));
         Action action = Objects.requireNonNull(
-                plugin.getTeleportManager().getActionRegistry().resolveAction(context.substring(spaceIndex + 1)),
+                plugin.getTeleportManager().getActionService().resolveAction(context.substring(spaceIndex + 1)),
                 "Type doesn't exist");
         return new DelayedActionAction(
                 plugin,

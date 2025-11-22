@@ -5,16 +5,11 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.teleports.OvTeleportAddon;
 import ru.overwrite.teleports.configuration.Config;
 import ru.overwrite.teleports.configuration.data.Particles;
-import ru.overwrite.teleports.utils.color.Colorizer;
-import ru.overwrite.teleports.utils.color.impl.LegacyAdvancedColorizer;
-import ru.overwrite.teleports.utils.color.impl.LegacyColorizer;
-import ru.overwrite.teleports.utils.color.impl.MiniMessageColorizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,16 +20,6 @@ import java.util.function.Consumer;
 
 @UtilityClass
 public final class Utils {
-
-    public Colorizer COLORIZER;
-
-    public void setupColorizer(ConfigurationSection mainSettings) {
-        COLORIZER = switch (mainSettings.getString("serializer", "LEGACY").toUpperCase(Locale.ENGLISH)) {
-            case "MINIMESSAGE" -> new MiniMessageColorizer();
-            case "LEGACY_ADVANCED" -> new LegacyAdvancedColorizer();
-            default -> new LegacyColorizer();
-        };
-    }
 
     public Particles.ParticleData createParticleData(String id) {
         int separatorIndex = id.indexOf(';');

@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import ru.overwrite.teleports.actions.Action;
-import ru.overwrite.teleports.actions.ActionRegistry;
+import ru.overwrite.teleports.actions.ActionService;
 import ru.overwrite.teleports.actions.impl.*;
 import ru.overwrite.teleports.configuration.Config;
 import ru.overwrite.teleports.configuration.data.Particles;
@@ -28,7 +28,7 @@ public final class TeleportManager {
     @Getter(AccessLevel.NONE)
     private final Config pluginConfig;
 
-    private final ActionRegistry actionRegistry;
+    private final ActionService actionService;
     private final ReferenceList<String> tpaHerePlayers = new ReferenceArrayList<>();
 
     @Getter(AccessLevel.NONE)
@@ -37,19 +37,19 @@ public final class TeleportManager {
     public TeleportManager(OvTeleportAddon plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
-        this.actionRegistry = new ActionRegistry(plugin);
+        this.actionService = new ActionService(plugin);
         this.registerDefaultActions();
     }
 
     private void registerDefaultActions() {
-        actionRegistry.register(new ActionBarActionType());
-        actionRegistry.register(new ConsoleActionType());
-        actionRegistry.register(new DelayedActionActionType());
-        actionRegistry.register(new EffectActionType());
-        actionRegistry.register(new MessageActionType());
-        actionRegistry.register(new PlayerActionType());
-        actionRegistry.register(new SoundActionType());
-        actionRegistry.register(new TitleActionType());
+        actionService.register(new ActionBarActionType());
+        actionService.register(new ConsoleActionType());
+        actionService.register(new DelayedActionActionType());
+        actionService.register(new EffectActionType());
+        actionService.register(new MessageActionType());
+        actionService.register(new PlayerActionType());
+        actionService.register(new SoundActionType());
+        actionService.register(new TitleActionType());
     }
 
     public boolean hasActiveTasks(String playerName) {
@@ -97,7 +97,7 @@ public final class TeleportManager {
     }
 
     public void spawnParticleSphere(Player player, Particles particles) {
-        if (!particles.afterTeleportEnabled()) {
+        if (!particles.afterTeleport().enabled()) {
             return;
         }
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
@@ -107,15 +107,15 @@ public final class TeleportManager {
 
             final double goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
-            final List<Player> receivers = particles.afterTeleportSendOnlyToPlayer() ? List.of(player) : null;
+            final List<Player> receivers = particles.afterTeleport().sendOnlyToPlayer() ? List.of(player) : null;
 
-            for (int i = 0; i < particles.afterTeleportCount(); i++) {
-                double yOffset = 1 - (2.0 * i) / (particles.afterTeleportCount() - 1);
+            for (int i = 0; i < particles.afterTeleport().count(); i++) {
+                double yOffset = 1 - (2.0 * i) / (particles.afterTeleport().count() - 1);
                 double radiusAtHeight = Math.sqrt(1 - yOffset * yOffset);
 
                 double theta = goldenAngle * i;
 
-                double afterTeleportRadius = particles.afterTeleportRadius();
+                double afterTeleportRadius = particles.afterTeleport().radius();
 
                 double xOffset = afterTeleportRadius * radiusAtHeight * Math.cos(theta);
                 double zOffset = afterTeleportRadius * radiusAtHeight * Math.sin(theta);
@@ -123,7 +123,7 @@ public final class TeleportManager {
                 Location particleLocation = loc.clone().add(xOffset, yOffset * afterTeleportRadius, zOffset);
 
                 world.spawnParticle(
-                        particles.afterTeleportParticle().particle(),
+                        particles.afterTeleport().particle().particle(),
                         receivers,
                         player,
                         particleLocation.getX(),
@@ -133,8 +133,8 @@ public final class TeleportManager {
                         0,
                         0,
                         0,
-                        particles.afterTeleportParticleSpeed(),
-                        particles.afterTeleportParticle().dustOptions());
+                        particles.afterTeleport().particleSpeed(),
+                        particles.afterTeleport().particle().dustOptions());
             }
         }, 1L);
     }

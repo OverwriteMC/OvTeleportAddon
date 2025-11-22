@@ -6,10 +6,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.overwrite.teleports.OvTeleportAddon;
+import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.configuration.data.MainSettings;
 import ru.overwrite.teleports.configuration.data.Messages;
 import ru.overwrite.teleports.configuration.data.Settings;
-import ru.overwrite.teleports.utils.Utils;
 
 import java.io.File;
 
@@ -23,68 +23,67 @@ public class Config {
         this.plugin = plugin;
     }
 
-    private Settings template;
-
     private Settings spawnSettings, tpaSettings, warpSettings, homeSettings;
 
     public static String timeHours, timeMinutes, timeSeconds;
 
     public void setupConfig(FileConfiguration config) {
         setupMainSettings(config.getConfigurationSection("main_settings"));
-        template = Settings.create(plugin, config, this, null, false);
-        spawnSettings = Settings.create(plugin, getFile(plugin.getDataFolder().getAbsolutePath(), "spawn.yml"), this, template, true);
-        tpaSettings = Settings.create(plugin, getFile(plugin.getDataFolder().getAbsolutePath(), "tpa.yml"), this, template, true);
-        warpSettings = Settings.create(plugin, getFile(plugin.getDataFolder().getAbsolutePath(), "warp.yml"), this, template, true);
-        homeSettings = Settings.create(plugin, getFile(plugin.getDataFolder().getAbsolutePath(), "home.yml"), this, template, true);
+        String absolutePath = plugin.getDataFolder().getAbsolutePath();
+        ConfigurationSection spawnConfig = mergeSectionsRecursive(config, getFile(absolutePath, "spawn.yml"));
+        this.spawnSettings = Settings.create(plugin, spawnConfig);
+        ConfigurationSection tpaConfig = mergeSectionsRecursive(config, getFile(absolutePath, "tpa.yml"));
+        this.tpaSettings = Settings.create(plugin, tpaConfig);
+        ConfigurationSection warpConfig = mergeSectionsRecursive(config, getFile(absolutePath, "warp.yml"));
+        this.warpSettings = Settings.create(plugin, warpConfig);
+        ConfigurationSection homeConfig = mergeSectionsRecursive(config, getFile(absolutePath, "home.yml"));
+        this.homeSettings = Settings.create(plugin, homeConfig);
         setupMessages(config.getConfigurationSection("messages"));
+    }
+
+    private ConfigurationSection mergeSectionsRecursive(ConfigurationSection source, ConfigurationSection target) {
+        for (String key : source.getKeys(false)) {
+            if (source.isConfigurationSection(key)) {
+                ConfigurationSection sourceSubSection = source.getConfigurationSection(key);
+
+                if (target.isConfigurationSection(key)) {
+                    ConfigurationSection targetSubSection = target.getConfigurationSection(key);
+                    mergeSectionsRecursive(sourceSubSection, targetSubSection);
+                } else if (!target.contains(key)) {
+                    ConfigurationSection newSection = target.createSection(key);
+                    copySection(sourceSubSection, newSection);
+                }
+            } else {
+                if (!target.contains(key)) {
+                    target.addDefault(key, source.get(key));
+                }
+            }
+        }
+        return target;
+    }
+
+    private void copySection(ConfigurationSection source, ConfigurationSection target) {
+        for (String key : source.getKeys(true)) {
+            target.set(key, source.get(key));
+        }
     }
 
     private MainSettings mainSettings;
 
     private void setupMainSettings(ConfigurationSection mainSettings) {
-        this.mainSettings = new MainSettings(
-                mainSettings.getInt("invulnerable_after_teleport", 12),
-                mainSettings.getBoolean("apply_to_spawn", true),
-                mainSettings.getBoolean("apply_to_tpa", true),
-                mainSettings.getBoolean("apply_to_warp", true),
-                mainSettings.getBoolean("apply_to_home", true)
-        );
+        this.mainSettings = MainSettings.create(mainSettings);
     }
-
-    public boolean isNullSection(ConfigurationSection section) {
-        return section == null;
-    }
-
-    private String messagesPrefix;
 
     private Messages messages;
 
     private void setupMessages(ConfigurationSection messages) {
 
-        messagesPrefix = Utils.COLORIZER.colorize(messages.getString("prefix", "messages.prefix"));
-
-        this.messages = new Messages(
-                getPrefixed(messages.getString("moved_on_teleport", "messages.moved_on_teleport"), messagesPrefix),
-                getPrefixed(messages.getString("teleported_on_teleport", "messages.teleported_on_teleport"), messagesPrefix),
-                getPrefixed(messages.getString("damaged_on_teleport", "messages.damaged_on_teleport"), messagesPrefix),
-                getPrefixed(messages.getString("damaged_other_on_teleport", "messages.damaged_other_on_teleport"), messagesPrefix),
-                getPrefixed(messages.getString("warp_not_found", "messages.warp_not_found"), messagesPrefix),
-                getPrefixed(messages.getString("cancelled", "messages.cancelled"), messagesPrefix),
-                getPrefixed(messages.getString("reload", "messages.reload"), messagesPrefix),
-                getPrefixed(messages.getString("no_perms", "messages.no_perms"), messagesPrefix)
-        );
+        this.messages = Messages.create(messages);
 
         final ConfigurationSection time = messages.getConfigurationSection("placeholders.time");
-        timeHours = Utils.COLORIZER.colorize(time.getString("hours", " ч."));
-        timeMinutes = Utils.COLORIZER.colorize(time.getString("minutes", " мин."));
-        timeSeconds = Utils.COLORIZER.colorize(time.getString("seconds", " сек."));
-    }
-
-    public String getPrefixed(String message, String prefix) {
-        if (message == null || prefix == null) {
-            return message;
-        }
-        return Utils.COLORIZER.colorize(message.replace("%prefix%", prefix));
+        timeHours = ColorizerProvider.COLORIZER.colorize(time.getString("hours", " ч."));
+        timeMinutes = ColorizerProvider.COLORIZER.colorize(time.getString("minutes", " мин."));
+        timeSeconds = ColorizerProvider.COLORIZER.colorize(time.getString("seconds", " сек."));
     }
 
     public FileConfiguration getFile(String path, String fileName) {

@@ -1,14 +1,15 @@
-package ru.overwrite.teleports.utils.color.impl;
+package ru.overwrite.teleports.color.impl;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import ru.overwrite.teleports.utils.color.Colorizer;
+import org.jetbrains.annotations.Nullable;
+import ru.overwrite.teleports.color.Colorizer;
 
 public class MiniMessageColorizer implements Colorizer {
 
     @Override
-    public String colorize(String message) {
+    public String colorize(@Nullable String message) {
         if (message == null || message.isEmpty()) {
             return message;
         }

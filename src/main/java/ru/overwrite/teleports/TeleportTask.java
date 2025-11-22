@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import ru.overwrite.teleports.actions.Action;
 import ru.overwrite.teleports.animations.impl.BasicAnimation;
+import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.configuration.data.Actions;
 import ru.overwrite.teleports.configuration.data.Bossbar;
 import ru.overwrite.teleports.configuration.data.Settings;
@@ -38,7 +39,7 @@ public class TeleportTask {
         if (settings.bossbar().bossbarEnabled()) {
             this.setupBossBar(settings.bossbar());
         }
-        if (settings.particles().preTeleportEnabled()) {
+        if (settings.particles().preTeleport().enabled()) {
             this.animationTask = new BasicAnimation(this.teleportingPlayer, preTeleportCooldown * 20, settings.particles()).runTaskTimerAsynchronously(plugin, 0, 1);
         }
         this.countdownTask = new BukkitRunnable() {
@@ -57,7 +58,7 @@ public class TeleportTask {
     }
 
     private void setupBossBar(Bossbar bossbar) {
-        String title = Utils.COLORIZER.colorize(bossbar.bossbarTitle().replace("%time%", Utils.getTime(finalPreTeleportCooldown)));
+        String title = ColorizerProvider.COLORIZER.colorize(bossbar.bossbarTitle().replace("%time%", Utils.getTime(finalPreTeleportCooldown)));
         this.bossBar = Bukkit.createBossBar(title, bossbar.bossbarColor(), bossbar.bossbarStyle());
         this.bossBar.addPlayer(this.teleportingPlayer);
         if (bossbar.smoothProgress()) {
@@ -101,7 +102,7 @@ public class TeleportTask {
                 bossBar.setProgress(progress);
             }
         }
-        String title = Utils.COLORIZER.colorize(settings.bossbar().bossbarTitle().replace("%time%", Utils.getTime(preTeleportCooldown)));
+        String title = ColorizerProvider.COLORIZER.colorize(settings.bossbar().bossbarTitle().replace("%time%", Utils.getTime(preTeleportCooldown)));
         bossBar.setTitle(title);
     }
 
