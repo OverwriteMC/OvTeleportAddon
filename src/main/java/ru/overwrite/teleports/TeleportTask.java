@@ -10,9 +10,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import ru.overwrite.teleports.actions.Action;
 import ru.overwrite.teleports.animations.impl.BasicAnimation;
+import ru.overwrite.teleports.animations.impl.CageAnimation;
 import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.configuration.data.Actions;
 import ru.overwrite.teleports.configuration.data.Bossbar;
+import ru.overwrite.teleports.configuration.data.Particles;
 import ru.overwrite.teleports.configuration.data.Settings;
 import ru.overwrite.teleports.utils.Utils;
 
@@ -39,8 +41,14 @@ public class TeleportTask {
         if (settings.bossbar().bossbarEnabled()) {
             this.setupBossBar(settings.bossbar());
         }
-        if (settings.particles().preTeleport().enabled()) {
-            this.animationTask = new BasicAnimation(this.teleportingPlayer, preTeleportCooldown * 20, settings.particles()).runTaskTimerAsynchronously(plugin, 0, 1);
+        Particles particles = settings.particles();
+        if (particles.preTeleport().enabled()) {
+            this.animationTask = switch (particles.preTeleport().animation()) {
+                case CAGE ->
+                        new CageAnimation(this.teleportingPlayer, preTeleportCooldown * 20, particles).runTaskTimerAsynchronously(plugin, 0, 1);
+                case BASIC ->
+                        new BasicAnimation(this.teleportingPlayer, preTeleportCooldown * 20, particles).runTaskTimerAsynchronously(plugin, 0, 1);
+            };
         }
         this.countdownTask = new BukkitRunnable() {
             @Override
