@@ -25,7 +25,7 @@ public class HomeListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        teleportManager.preTeleport(player.getBase(), e.getHomeName(), e.getHomeLocation(), pluginConfig.getHomeSettings());
+        teleportManager.preTeleport(player.getBase(), e.getHomeName(), e.getHomeLocation(), pluginConfig.getHomeSettings(), false);
         e.setCancelled(true);
     }
 }

@@ -25,7 +25,7 @@ public class SpawnListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        teleportManager.preTeleport(player, "spawn", e.getSpawnLocation(), pluginConfig.getSpawnSettings());
+        teleportManager.preTeleport(player, "spawn", e.getSpawnLocation(), pluginConfig.getSpawnSettings(), false);
         e.setCancelled(true);
     }
 }

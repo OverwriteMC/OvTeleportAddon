@@ -55,7 +55,11 @@ public class TeleportTask {
             public void run() {
                 preTeleportCooldown--;
                 if (preTeleportCooldown <= 0) {
-                    cleanupAndTeleport(location);
+                    Location loc = location;
+                    if (loc == null) {
+                        loc = Bukkit.getPlayer(teleportTo).getLocation();
+                    }
+                    cleanupAndTeleport(loc);
                     return;
                 }
                 updateBossBar();
