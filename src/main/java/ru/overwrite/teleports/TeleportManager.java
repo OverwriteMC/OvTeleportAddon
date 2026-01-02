@@ -74,12 +74,12 @@ public final class TeleportManager {
         perPlayerActiveTeleportTask.remove(playerName);
     }
 
-    public void preTeleport(Player requester, String teleportTo, Location loc, Settings settings, boolean toPlayer) {
+    public void preTeleport(Player requester, String teleportTo, Location loc, Settings settings) {
         int channelPreTeleportCooldown = getCooldown(requester, settings.cooldown().defaultPreTeleportCooldown(), settings.cooldown().preTeleportCooldowns());
         if (channelPreTeleportCooldown > 0) {
             executeActions(requester, teleportTo, channelPreTeleportCooldown, settings.actions().preTeleportActions());
             TeleportTask teleportTask = new TeleportTask(plugin, this, requester, teleportTo, channelPreTeleportCooldown, settings);
-            teleportTask.startPreTeleportTimer(toPlayer ? null : loc);
+            teleportTask.startPreTeleportTimer(loc);
             return;
         }
         teleportPlayer(requester, teleportTo, loc, settings);

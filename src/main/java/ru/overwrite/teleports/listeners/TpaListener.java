@@ -43,7 +43,7 @@ public class TpaListener implements Listener {
             requester = (User) e.getRequestee();
             requestee = (User) e.getRequester();
         }
-        teleportManager.preTeleport(requester.getBase(), requestee.getName(), request.getLocation(), pluginConfig.getTpaSettings(), true);
+        teleportManager.preTeleport(requester.getBase(), requestee.getName(), request.getLocation(), pluginConfig.getTpaSettings());
         requestee.removeTpaRequest(requester.getName());
         e.setCancelled(true);
     }

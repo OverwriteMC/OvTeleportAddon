@@ -38,7 +38,7 @@ public class WarpListener implements Listener {
             Utils.sendMessage(pluginConfig.getMessages().warpNotFound(), player);
             return;
         }
-        teleportManager.preTeleport(player, e.getWarp(), loc, pluginConfig.getWarpSettings(), false);
+        teleportManager.preTeleport(player, e.getWarp(), loc, pluginConfig.getWarpSettings());
         e.setCancelled(true);
     }
 }
