@@ -1,6 +1,5 @@
 package ru.overwrite.teleports.listeners;
 
-import com.earth2me.essentials.IUser;
 import com.earth2me.essentials.User;
 import net.ess3.api.events.TPARequestEvent;
 import net.essentialsx.api.v2.events.TeleportRequestResponseEvent;

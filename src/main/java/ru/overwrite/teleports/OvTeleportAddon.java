@@ -16,6 +16,7 @@ import ru.overwrite.teleports.color.ColorizerProvider;
 import ru.overwrite.teleports.commands.TeleportAddonCommand;
 import ru.overwrite.teleports.commands.TeleportCancelCommand;
 import ru.overwrite.teleports.configuration.Config;
+import ru.overwrite.teleports.configuration.data.MainSettings;
 import ru.overwrite.teleports.listeners.*;
 import ru.overwrite.teleports.logging.Logger;
 import ru.overwrite.teleports.logging.impl.BukkitLogger;
@@ -62,16 +63,17 @@ public final class OvTeleportAddon extends JavaPlugin {
     }
 
     public void registerEvents(PluginManager pluginManager) {
-        if (pluginConfig.getMainSettings().applyToSpawn()) {
+        MainSettings mainSettings = pluginConfig.getMainSettings();
+        if (mainSettings.applyToSpawn()) {
             pluginManager.registerEvents(new SpawnListener(this), this);
         }
-        if (pluginConfig.getMainSettings().applyToTpa()) {
+        if (mainSettings.applyToTpa()) {
             pluginManager.registerEvents(new TpaListener(this), this);
         }
-        if (pluginConfig.getMainSettings().applyToWarp()) {
+        if (mainSettings.applyToWarp()) {
             pluginManager.registerEvents(new WarpListener(this), this);
         }
-        if (pluginConfig.getMainSettings().applyToHome()) {
+        if (mainSettings.applyToHome()) {
             pluginManager.registerEvents(new HomeListener(this), this);
         }
         pluginManager.registerEvents(new TeleportListener(this), this);
