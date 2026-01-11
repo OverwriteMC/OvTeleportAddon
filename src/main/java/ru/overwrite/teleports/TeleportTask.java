@@ -110,7 +110,7 @@ public class TeleportTask {
                 bossBar.setProgress(progress);
             }
         }
-        String title = ColorizerProvider.COLORIZER.colorize(settings.bossbar().bossbarTitle().replace("%time%", Utils.getTime(preTeleportCooldown)));
+        String title = settings.bossbar().bossbarTitle().replace("%time%", Utils.getTime(preTeleportCooldown));
         bossBar.setTitle(title);
     }
 
