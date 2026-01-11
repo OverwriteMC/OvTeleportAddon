@@ -151,7 +151,7 @@ public final class TeleportManager {
     }
 
     @Getter(AccessLevel.NONE)
-    private final String[] searchList = {"%teleporting_player%", "%player_teleport_to%", "%time%"};
+    private final String[] searchList = {"%teleporting_player%", "%teleport_to%", "%time%"};
 
     public void executeActions(Player teleportingPlayer, String teleportTo, int cooldown, List<Action> actionList) {
         if (actionList.isEmpty()) {
