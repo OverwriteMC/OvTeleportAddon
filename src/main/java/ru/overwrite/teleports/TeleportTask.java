@@ -66,7 +66,7 @@ public class TeleportTask {
     }
 
     private void setupBossBar(Bossbar bossbar) {
-        String title = ColorizerProvider.COLORIZER.colorize(bossbar.bossbarTitle().replace("%time%", Utils.getTime(finalPreTeleportCooldown)));
+        String title = bossbar.bossbarTitle().replace("%time%", Utils.getTime(finalPreTeleportCooldown));
         this.bossBar = Bukkit.createBossBar(title, bossbar.bossbarColor(), bossbar.bossbarStyle());
         this.bossBar.addPlayer(this.teleportingPlayer);
         if (bossbar.smoothProgress()) {
